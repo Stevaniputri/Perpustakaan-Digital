@@ -19,11 +19,15 @@
                     <div class="d-flex justify-content-center align-items-center mb-3">
                         <a href="{{ route('book.detail', ['id' => $item->id]) }}" class="btn btn-success btn-sm me-2"><i class="fas fa-info-circle"></i></a>
                         @if($item->stock > 0)
-                            <!-- Borrow button for available stock -->
-                            <form action="{{ route('borrow', ['book' => $item->id]) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-primary btn-sm me-2"><i class="fas fa-book"></i> <span style="font-size: 12px">Borrow</span></button>
-                            </form>
+                            @if ($item->isBorrowed(Auth::id()))
+                                <button type="submit" class="btn btn-secondary btn-sm me-2" disabled><i class="fas fa-book"></i> <span style="font-size: 12px">Borrow</span></button>    
+                            @else
+                                <!-- Borrow button for available stock -->
+                                <form action="{{ route('borrow', ['book' => $item->id]) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary btn-sm me-2"><i class="fas fa-book"></i> <span style="font-size: 12px">Borrow</span></button>
+                                </form>
+                            @endif
                         @else
                             <!-- Button to trigger modal pop-up -->
                             <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#alertModal">

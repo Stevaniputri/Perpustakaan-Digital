@@ -53,7 +53,13 @@
                                 </td>
                                 <td>{{ $borrow->book->title }}</td>
                                 <td>{{ $borrow->tanggal_peminjaman }}</td>
-                                <td>{{ $borrow->tanggal_pengembalian }}</td>
+                                <td>
+                                    @if ($borrow->status === 'borrowed')
+                                        <span class="badge bg-danger text-dark">Borrowed</span>
+                                    @else
+                                        {{ $borrow->tanggal_pengembalian }}
+                                    @endif
+                                </td>
                                 <td>
                                     @if ($borrow->status == 'borrowed')
                                         <span class="badge bg-danger text-dark">Borrowed</span>
