@@ -45,16 +45,6 @@ class Book extends Model
         return $this->hasMany(Borrow::class);
     }
 
-    public function borrower()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function borrowedBooks()
-    {
-        return $this->belongsToMany(Borrow::class, 'borrowed_book')->withPivot('status', 'tanggal_peminjaman', 'tanggal_pengembalian');
-    }
-
     // Define the relationship with Review
     public function reviews()
     {
