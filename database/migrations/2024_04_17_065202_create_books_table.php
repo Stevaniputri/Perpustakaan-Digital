@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('publisher');
             $table->string('year');
             $table->string('cover');
+            $table->integer('stock')->default(0); // Tambah kolom stok
             $table->timestamps();
         });
         

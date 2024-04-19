@@ -14,22 +14,28 @@
                 @csrf
                 @method('PUT')
                 <div class="row">
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Book Title</label>
                             <input type="text" placeholder="Enter book title" name="title" value="{{ $books->title }}">
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Writer</label>
                             <input type="text" placeholder="Enter writer" name="writer" value="{{ $books->writer }}">
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Year</label>
                             <input type="text" placeholder="Enter publish year" name="year" value="{{ $books->year }}">
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Stock</label>
+                            <input type="number" placeholder="Add stock" name="stock" value="{{ $books->stock}}">
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">

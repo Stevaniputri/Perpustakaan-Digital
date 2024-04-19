@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Borrow;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -26,7 +27,7 @@ class BookController extends Controller
 
     public function booklist()
     {
-        $dataBook = Book::all();
+        $dataBook = Book::latest()->get();
         return view('Book.booklist', compact('dataBook'));
     }
 
@@ -76,7 +77,8 @@ class BookController extends Controller
             'categoryId' => 'required',
             'publisher' => 'required',
             'year' => 'required',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Perubahan di sini: hapus 'file' dari aturan validasi
+            'stock' => 'required|integer|min:0', // Menambahkan validasi untuk stok buku
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Hapus 'file' dari aturan validasi
         ]);
     
         if ($request->hasFile('cover')) {
@@ -92,11 +94,12 @@ class BookController extends Controller
             'categoryId' => $request->categoryId,
             'publisher' => $request->publisher,
             'year' => $request->year,
-            'cover' => $cover // Perubahan di sini: simpan nama file gambar
+            'stock' => $request->stock, // Menyimpan stok buku
+            'cover' => $cover // Menyimpan nama file gambar
         ]);
     
         return redirect()->route('booklist')->with('success', 'Berhasil menambahkan buku');
-    }    
+    }   
 
     /**
      * Store a newly created resource in storage.
@@ -125,26 +128,34 @@ class BookController extends Controller
             'categoryId' => 'required',
             'publisher' => 'required',
             'year' => 'required',
-            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Perubahan di sini: hapus 'file' dari aturan validasi
+            'stock' => 'required|integer|min:0',
+            'cover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-    
+
+        $book = Book::findOrFail($id); // Ambil data buku yang akan diupdate
+
+        // Proses penyimpanan gambar
         if ($request->hasFile('cover')) {
             $cover = time() . '.' . $request->file('cover')->getClientOriginalExtension();
             $request->file('cover')->move(public_path('images'), $cover);
-        } else {
-            $cover = null;
+            // Hapus gambar lama jika ada
+            if ($book->cover) {
+                Storage::delete('images/' . $book->cover);
+            }
+            // Update kolom cover dengan nama gambar yang baru
+            $book->cover = $cover;
         }
-    
-        Book::where('id', $id)->update([
-            'title' => $request->title,
-            'writer' => $request->writer,
-            'categoryId' => $request->categoryId,
-            'publisher' => $request->publisher,
-            'year' => $request->year,
-            'cover' => $cover // Perubahan di sini: simpan nama file gambar
-        ]);
-    
-        return redirect()->route('booklist')->with('success', 'Berhasil menambahkan buku');
+
+        // Update data buku lainnya
+        $book->title = $request->title;
+        $book->writer = $request->writer;
+        $book->categoryId = $request->categoryId;
+        $book->publisher = $request->publisher;
+        $book->year = $request->year;
+        $book->stock = $request->stock;
+        $book->save();
+
+        return redirect()->route('booklist')->with('success', 'Berhasil memperbarui buku');
     }
 
     /**

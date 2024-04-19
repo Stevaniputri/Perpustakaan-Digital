@@ -48,6 +48,7 @@
                             <th>Category</th>
                             <th>Publisher</th>
                             <th>Year</th>
+                            <th>Stock</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -67,6 +68,7 @@
                             <td>{{ $item->category->name }}</td>
                             <td>{{ $item->publisher }}</td>
                             <td>{{ $item->year }}</td>
+                            <td>{{ $item->stock }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <!-- Icon untuk mengedit buku (Ukuran: 2x, Warna: Kuning) -->

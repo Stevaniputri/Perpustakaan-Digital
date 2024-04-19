@@ -34,10 +34,10 @@ class Book extends Model
         return $this->borrows()->where('status', 'borrowed')->count() == 0;
     }    
 
-    public function isBorrowed()
+    public function isBorrowed($userId)
     {
-        return $this->borrows()->where('status', 'borrowed')->exists();
-    }
+        return $this->borrows()->where('status', 'borrowed')->where('user_id', $userId)->exists();
+    }    
 
     // Tambahkan relasi dengan tabel `borrows`
     public function borrows()

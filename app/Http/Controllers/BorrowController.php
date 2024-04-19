@@ -54,6 +54,11 @@ class BorrowController extends Controller
         $userId = Auth::id();
         $book = Book::findOrFail($bookId);
     
+        // Periksa apakah masih ada stok buku yang tersedia
+        if ($book->stock <= 0) {
+            return redirect()->back()->with('error', 'Maaf, buku ini sudah tidak tersedia untuk dipinjam.');
+        }
+    
         // Simpan data peminjaman buku ke dalam tabel 'borrows'
         Borrow::create([
             'user_id' => $userId,
@@ -61,6 +66,9 @@ class BorrowController extends Controller
             'tanggal_peminjaman' => now(),
             'status' => 'borrowed',
         ]);
+    
+        // Kurangi stok buku yang tersedia
+        $book->decrement('stock');
     
         return redirect()->route('borrowedUser')->with('success', 'Buku berhasil dipinjam.');
     }    
@@ -80,6 +88,7 @@ class BorrowController extends Controller
     
         // Ubah status buku menjadi "available"
         $borrow->book->update(['status' => 'available']);
+        $borrow->book->increment('stock');
     
         return redirect()->back()->with('success', 'Buku berhasil dikembalikan.');
     }

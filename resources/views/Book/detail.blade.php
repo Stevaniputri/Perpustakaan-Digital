@@ -21,9 +21,10 @@
                             <p class="card-text">Author: {{ $books->writer }}</p>
                             <p class="card-text">Publisher: {{ $books->publisher }}</p>
                             <p class="card-text">Publication Year: {{ $books->year }}</p>
+                            <p class="card-text">Stok Tersedia: {{ $books->stock }}</p>
 
                             <!-- Check if the user has borrowed the book -->
-                            @if($books->borrows->where('status', 'borrowed')->count() > 0)
+                            @if($books->isBorrowed(auth()->id()))
                                 <!-- Check if the user has given a review -->
                                 @if($books->reviews->where('user_id', auth()->id())->count() > 0)
                                     <p>Your Review: {{ $books->reviews->where('user_id', auth()->id())->first()->review }}</p>
